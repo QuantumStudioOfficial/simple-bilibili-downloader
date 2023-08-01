@@ -63,8 +63,8 @@ output_path = "./"
 for opt in opts:
     if opt[0] == '-o':
         output_path = opt[1]
-        if not os.path.isdir(output_path):
-            raise Exception("输出路径不是文件夹")
+        # if not os.path.isdir(output_path):
+        #     raise Exception("输出路径不是文件夹")
         if output_path[-1] != '/':
             output_path += '/'
         break
@@ -209,6 +209,7 @@ if info_mode:
             print()
     exit(0)
 
+filter_file_name = lambda name: re.sub(r'[\/:*?"<>|]','-',name)
 
 def download(url,name,type = 'video'):
     suffix = url.split('?')[0].split('.')[-1]
@@ -265,7 +266,7 @@ def download(url,name,type = 'video'):
 
 
 def download_video(name,bvid,cid):
-    video_name = name
+    video_name = filter_file_name(name)
     save_path = output_path + video_name + '.mp4'
 
     if os.path.exists(save_path):
