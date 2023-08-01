@@ -239,7 +239,7 @@ def download(url,name,type = 'video'):
             with rich.progress.Progress() as progress :
                 task = progress.add_task(progress_name,total=total_sizee)
                 progress.update(task,advance=downloaded_size)
-            return save_name
+            return save_path
         else:
             #继续下载
             headers['Range'] = 'bytes=%d-' % downloaded_size
