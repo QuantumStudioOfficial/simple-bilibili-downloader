@@ -13,8 +13,6 @@ pretty.install()
 opts,args = getopt.getopt(sys.argv[1:],"hiq:b:o:",["help","info","playlist"])
 
 
-if len(opts) == 0:
-    raise Exception("没有指定参数")
 
 info_mode = False
 
@@ -209,7 +207,7 @@ if info_mode:
             print()
     exit(0)
 
-filter_file_name = lambda name: re.sub(r'[\/:*?"<>|]','-',name)
+filter_file_name = lambda name: re.sub(r'[\/:*?"<>|]','_',name)
 
 def download(url,name,type = 'video'):
     suffix = url.split('?')[0].split('.')[-1]
