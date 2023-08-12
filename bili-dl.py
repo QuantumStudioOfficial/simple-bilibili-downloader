@@ -10,8 +10,32 @@ import os
 pretty.install()
 
 
-opts,args = getopt.getopt(sys.argv[1:],"hiq:b:o:",["help","info","playlist"])
+opts,args = getopt.getopt(sys.argv[1:],"hiq:b:o:avn",["help","info","playlist"])
 
+print(opts)
+
+audio_only = False
+
+video_only = False
+
+# -vn = audio only
+# -an = video only
+av_only_flag = False
+
+for opt in opts:
+    if opt[0] == '-n':
+        av_only_flag = True
+
+    if opt[0] == '-v':
+            audio_only = True
+    if opt[0] == '-a':
+            video_only = True  
+
+if av_only_flag:
+    if video_only and audio_only:
+        raise Exception("不能同时指定-v和-a")
+    if not video_only and not audio_only:
+        raise Exception("-n模式必须指定-v或-a")
 
 
 info_mode = False
@@ -25,20 +49,23 @@ Options:
     -i, --info            显示视频信息
     -q <qn>               指定视频质量
         [*]表示需要大会员
+        [~]需要登陆
             qn=6  240P 极速
             qn=16 360P 流畅	
             qn=32 480P 清晰
             qn=64 720P 高清	
-            qn=74 720P60 高帧率	
-            qn=80 1080P 高清	
-            qn=112 1080P+ 高码率*
-            qn=116 1080P60 高帧率*
-            qn=120 4K 超清*
-            qn=125 HDR 真彩色*
-            qn=126 杜比视界*
-            qn=127 8K 超高清*
+            qn=74 720P60 高帧率~	
+            qn=80 1080P 高清~	
+            qn=112 1080P+ 高码率*~
+            qn=116 1080P60 高帧率*~
+            qn=120 4K 超清*~
+            qn=125 HDR 真彩色*~
+            qn=126 杜比视界*~
+            qn=127 8K 超高清*~
     -b <kv>               指定cookies
     -o <path>             指定输出路径
+    -vn                   只下载音频
+    -an                   只下载视频
     --playlist            下载所有分P
               """)
         exit(0)
@@ -302,6 +329,24 @@ def download_video(name,bvid,cid):
 
     if play_json["code"] != 0:
         raise Exception("获取视频下载地址失败",play_json["message"])
+    
+    if audio_only:
+        save_path = output_path + video_name + '.aac'
+        print("只下载音频...")
+        saved_audio_name = download(audio_url,video_name,'audio')
+        os.system("ffmpeg -hide_banner -loglevel error -i \"%s\" -vn -c:a copy \"%s\"" % (saved_audio_name,save_path))
+        os.remove(saved_audio_name)
+        print(video_name+" >>> "+"下载完成")
+        return
+    
+    if video_only:
+        save_path = output_path + video_name + '.mp4'
+        print("只下载视频...")
+        saved_video_name = download(video_url,video_name)
+        os.system("ffmpeg -hide_banner -loglevel error -i \"%s\" -an -c:v copy \"%s\"" % (saved_video_name,save_path))
+        os.remove(saved_video_name)
+        print(video_name+" >>> "+"下载完成")
+        return
 
     saved_video_name = download(video_url,video_name)
     saved_audio_name = download(audio_url,video_name,'audio')
