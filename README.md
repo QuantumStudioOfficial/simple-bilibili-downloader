@@ -46,3 +46,7 @@ python bilibili.py -b SESSDATA=xxxxx https://www.bilibili.com/video/BV1Eb411u7Fw
 python bilibili.py -h
 ```
 
+### 注意
+* 要下载720p以上的视频需要登录账号
+* 需要指定cookie  SESSDATA
+* 可以去浏览器的开发者工具里找到cookie
