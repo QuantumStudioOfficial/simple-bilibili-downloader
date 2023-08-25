@@ -12,7 +12,6 @@ pretty.install()
 
 opts,args = getopt.getopt(sys.argv[1:],"hiq:b:o:avn",["help","info","playlist"])
 
-print(opts)
 
 audio_only = False
 
